@@ -1,4 +1,4 @@
-package com.example.agresstore.ui.dashboard;
+package com.example.agresstore.ui.product;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -10,22 +10,22 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
-import com.example.agresstore.databinding.FragmentDashboardBinding;
+import com.example.agresstore.databinding.FragmentHomeBinding;
 
-public class DashboardFragment extends Fragment {
+public class ProductFragment extends Fragment {
 
-    private FragmentDashboardBinding binding;
+    private FragmentHomeBinding binding;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        DashboardViewModel dashboardViewModel =
-                new ViewModelProvider(this).get(DashboardViewModel.class);
+        ProductViewModel productViewModel =
+                new ViewModelProvider(this).get(ProductViewModel.class);
 
-        binding = FragmentDashboardBinding.inflate(inflater, container, false);
+        binding = FragmentHomeBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
-        final TextView textView = binding.textDashboard;
-        dashboardViewModel.getText().observe(getViewLifecycleOwner(), textView::setText);
+        final TextView textView = binding.textHome;
+        productViewModel.getText().observe(getViewLifecycleOwner(), textView::setText);
         return root;
     }
 
