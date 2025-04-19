@@ -13,6 +13,7 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.example.agresstore.ContactUsActivity;
 import com.example.agresstore.EditProfileActivity;
 import com.example.agresstore.LoginActivity;
 import com.example.agresstore.databinding.FragmentProfileBinding;
@@ -46,6 +47,11 @@ public class ProfileFragment extends Fragment {
     private void setupClickListeners() {
         binding.btnEditProfile.setOnClickListener(v -> {
             Intent intent = new Intent(requireContext(), EditProfileActivity.class);
+            startActivity(intent);
+        });
+
+        binding.btnContactUs.setOnClickListener(v -> {
+            Intent intent = new Intent(getActivity(), ContactUsActivity.class);
             startActivity(intent);
         });
 

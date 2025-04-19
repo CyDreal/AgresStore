@@ -7,12 +7,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.example.agresstore.EditProfileActivity;
+import com.example.agresstore.LoginActivity;
 import com.example.agresstore.databinding.FragmentProfileBinding;
 
 public class ProfileFragment extends Fragment {
@@ -46,6 +48,27 @@ public class ProfileFragment extends Fragment {
             Intent intent = new Intent(requireContext(), EditProfileActivity.class);
             startActivity(intent);
         });
+
+        binding.btnLogout.setOnClickListener(v -> {
+            logout();
+        });
+    }
+
+    private void logout() {
+        // bersihkan semua data yang ada di UserSession
+        SharedPreferences prefs = requireContext().getSharedPreferences("UserSession", requireContext().MODE_PRIVATE);
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.clear();
+        editor.apply();
+
+        // menampilkan pesan sukses
+        Toast.makeText(requireContext(), "Logout successful", Toast.LENGTH_SHORT).show();
+
+        // arahkan ke aktivity login dan bersihkan stack
+        Intent intent = new Intent(requireContext(), LoginActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(intent);
+        requireActivity().finish();
     }
 
     @Override

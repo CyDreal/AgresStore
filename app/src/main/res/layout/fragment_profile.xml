@@ -113,6 +113,17 @@
             app:cornerRadius="12dp"
             app:backgroundTint="@color/primary"
             app:layout_constraintTop_toBottomOf="@id/cardProfile" />
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnContactUs"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:layout_marginTop="16dp"
+            android:text="Contact Us"
+            android:textAllCaps="false"
+            android:textSize="16sp"
+            app:cornerRadius="12dp"
+            app:backgroundTint="@color/primary"
+            app:layout_constraintTop_toBottomOf="@id/btnEditProfile" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnLogout"
@@ -124,7 +135,7 @@
             android:textSize="16sp"
             app:cornerRadius="12dp"
             app:backgroundTint="@color/primary"
-            app:layout_constraintTop_toBottomOf="@id/btnEditProfile" />
+            app:layout_constraintTop_toBottomOf="@id/btnContactUs" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>

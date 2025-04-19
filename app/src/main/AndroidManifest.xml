@@ -17,6 +17,9 @@
         android:theme="@style/Theme.AgresStore"
         tools:targetApi="31">
         <activity
+            android:name=".ContactUsActivity"
+            android:exported="false" />
+        <activity
             android:name=".ProductDetailActivity"
             android:exported="false" />
         <activity
