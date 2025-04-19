@@ -9,17 +9,17 @@
         android:id="@+id/navigation_product"
         android:name="com.example.agresstore.ui.product.ProductFragment"
         android:label="@string/title_product"
-        tools:layout="@layout/fragment_home" />
+        tools:layout="@layout/fragment_product" />
 
     <fragment
         android:id="@+id/navigation_cart"
         android:name="com.example.agresstore.ui.cart.CartFragment"
         android:label="@string/title_cart"
-        tools:layout="@layout/fragment_dashboard" />
+        tools:layout="@layout/fragment_cart" />
 
     <fragment
         android:id="@+id/navigation_profile"
         android:name="com.example.agresstore.ui.profile.ProfileFragment"
         android:label="@string/title_profile"
-        tools:layout="@layout/fragment_notifications" />
+        tools:layout="@layout/fragment_profile" />
 </navigation>
