@@ -1,6 +1,7 @@
 package com.example.agresstore.adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.text.Layout;
 import android.view.LayoutInflater;
@@ -14,6 +15,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
+import com.example.agresstore.ProductDetailActivity;
 import com.example.agresstore.R;
 import com.example.agresstore.model.DataProduct;
 import com.google.android.material.button.MaterialButton;
@@ -113,6 +115,21 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHold
                         "Failed to add " + result.getNama_produk() + " to cart",
                         Snackbar.LENGTH_SHORT).show();
             }
+        });
+
+        // untuk mengambil data produk yang dipilih guna ditampilka pada product detail
+        holder.itemView.setOnClickListener(v -> {
+            DataProduct product = results.get(position);
+            Intent intent = new Intent(context, ProductDetailActivity.class);
+            intent.putExtra("product_id", product.getId());
+            intent.putExtra("name", product.getNama_produk());
+            intent.putExtra("price", product.getHarga_jual());
+            intent.putExtra("status", product.getStatus());
+            intent.putExtra("category", product.getKategori());
+            intent.putExtra("stock", product.getStok());
+            intent.putExtra("description", product.getDeskripsi());
+            intent.putExtra("image", product.getFoto());
+            context.startActivity(intent);
         });
     }
 
