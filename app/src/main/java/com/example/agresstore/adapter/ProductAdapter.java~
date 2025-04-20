@@ -33,7 +33,6 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHold
     private List<DataProduct> filteredList; // data yang telah terfilter
     private NumberFormat numberFormat;
     private SharedPreferences sharedPreferences;
-    private String lastQuery = ""; // untuk menyimpan query terakhir
 
     public ProductAdapter(Context context, List<DataProduct> results) {
         this.context = context;
@@ -45,7 +44,6 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHold
 
     // method untuk melakukan filterisasi data
     public void filter(String query) {
-        lastQuery = query; // menyimpan query terakhir
         // queary atau gampangnya text yang kita masukkan kedalam search view
         filteredList.clear();
         if (query.isEmpty()) {
@@ -178,10 +176,5 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHold
             this.aGambar = itemView.findViewById(R.id.ivProduct);
             this.btnBuy = itemView.findViewById(R.id.btnAddToCart);
         }
-    }
-
-    // tambahkan method untuk mendapatkan queary terakhir
-    public String getLastQuery() {
-        return lastQuery;
     }
 }

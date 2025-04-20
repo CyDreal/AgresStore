@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.SearchView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -29,20 +30,22 @@ public class ProductFragment extends Fragment {
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        productViewModel =
-                new ViewModelProvider(this).get(ProductViewModel.class);
+//        productViewModel =
+//                new ViewModelProvider(this).get(ProductViewModel.class);
 
         binding = FragmentProductBinding.inflate(inflater, container, false);
-        View root = binding.getRoot();
+//        View root = binding.getRoot();
 
         // hapus duplikasi atau redudansi dari instalasi ViewModel
-        productViewModel = new ViewModelProvider(this).get(ProductViewModel.class);
+//        productViewModel = new ViewModelProvider(this).get(ProductViewModel.class);
 
         setupRecyclerView();
-        observeProducts();
-        productViewModel.loadProducts(); // memuat data dari API
+        setupSearchView();
+        setupViewModel();
+//        observeProducts();
+//        productViewModel.loadProducts(); // memuat data dari API
 
-        return root;
+        return binding.getRoot();
     }
 
     private void setupRecyclerView() {
@@ -62,20 +65,58 @@ public class ProductFragment extends Fragment {
         recyclerView.setAdapter(adapter);
     }
 
-    private void observeProducts() {
-        // Fix the parameter naming conflict
-        productViewModel.getProducts().observe(getViewLifecycleOwner(), products -> {
-            if(products != null) {
-                productList.clear();
-                productList.addAll(products); // Use products instead of productList
-                adapter.notifyDataSetChanged();
+    private void setupSearchView() {
+        binding.searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                adapter.filter(query);
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                adapter.filter(newText);
+                return false;
             }
         });
+
+        // optional: Customize SearchView
+        binding.searchView.setIconifiedByDefault(true);
+        binding.searchView.setQueryHint("Cari Produk...");
+    }
+
+    private void setupViewModel() {
+        productViewModel = new ViewModelProvider(this).get(ProductViewModel.class);
+        productViewModel.getProducts().observe(getViewLifecycleOwner(), products -> {
+            if (products != null) {
+                productList.clear();
+                productList.addAll(products);
+                adapter = new ProductAdapter(requireContext(), products);
+                binding.rViewProduct.setAdapter(adapter);
+            }
+        });
+        productViewModel.loadProducts();
     }
 
     @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        binding = null;
+    public void onResume() {
+        super.onResume();
     }
+
+//    private void observeProducts() {
+//        // Fix the parameter naming conflict
+//        productViewModel.getProducts().observe(getViewLifecycleOwner(), products -> {
+//            if(products != null) {
+//                productList.clear();
+//                productList.addAll(products); // Use products instead of productList
+//                adapter.notifyDataSetChanged();
+//            }
+//        });
+//    }
+
+//    @Override
+//    public void onDestroyView() {
+//        super.onDestroyView();
+//        binding = null;
+//    }
 }

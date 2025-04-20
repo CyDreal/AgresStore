@@ -18,7 +18,7 @@
             android:id="@+id/ivProduct"
             android:layout_width="match_parent"
             android:layout_height="200dp"
-            android:scaleType="centerCrop"
+            android:scaleType="fitCenter"
             app:shapeAppearanceOverlay="@style/ProductImageStyle"/>
 
         <LinearLayout
@@ -44,6 +44,7 @@
                 android:layout_marginTop="8dp"
                 android:textAppearance="@style/TextAppearance.Material3.TitleLarge"
                 android:textColor="@color/primary"
+                android:maxLines="1"
                 android:textStyle="bold"
                 android:textSize="18sp"
                 tools:text="Rp 1.000.000"/>
