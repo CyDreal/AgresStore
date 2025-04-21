@@ -1,6 +1,5 @@
 package com.example.agresstore.adapter;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.view.LayoutInflater;
@@ -61,13 +60,14 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.ViewHolder> {
         holder.btnDelete.setOnClickListener(view -> {
             removeItem(position);
             saveCartProducts();
-            updateInterface.onCartUpdate();
+            updateInterface.onCartUpdate(); // ini akan mentriger total harga
         });
 
         holder.btnIncrease.setOnClickListener(view -> {
             item.incrementQuantity();
             saveCartProducts();
             notifyItemChanged(position);
+            updateInterface.onCartUpdate(); // ini akan mentriger total harga
         });
 
         holder.btnDecrease.setOnClickListener(v -> {
@@ -75,6 +75,7 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.ViewHolder> {
                 item.decrementQuantity();
                 saveCartProducts();
                 notifyItemChanged(position);
+                updateInterface.onCartUpdate(); // ini akan mentriger total harga
             }
         });
     }

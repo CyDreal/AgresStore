@@ -11,20 +11,20 @@
 
         <ImageButton
             android:id="@+id/btnBack"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            android:padding="16dp"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_margin="16dp"
+            android:background="@drawable/circle_background"
             android:src="@drawable/arrow_back_24px"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:tint="@color/white" />
+            app:tint="@color/secondary" />
 
         <ImageView
             android:id="@+id/ivProduct"
             android:layout_width="match_parent"
             android:layout_height="300dp"
-            android:scaleType="centerCrop"
+            android:scaleType="fitCenter"
             app:layout_constraintTop_toTopOf="parent" />
 
         <androidx.constraintlayout.widget.ConstraintLayout
@@ -103,6 +103,27 @@
                 android:textSize="16sp"
                 app:layout_constraintStart_toStartOf="@id/tvStockLabel"
                 app:layout_constraintTop_toTopOf="@id/tvCategory" />
+
+            <TextView
+                android:id="@+id/tvVisitCountLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="32dp"
+                android:text="Dilihat"
+                android:textColor="@color/text_secondary"
+                android:textSize="14sp"
+                app:layout_constraintStart_toEndOf="@id/tvStock"
+                app:layout_constraintTop_toTopOf="@id/tvStockLabel" />
+
+            <TextView
+                android:id="@+id/tvVisitCount"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/text_primary"
+                android:textSize="16sp"
+                android:text="0"
+                app:layout_constraintStart_toStartOf="@id/tvVisitCountLabel"
+                app:layout_constraintTop_toTopOf="@id/tvStock" />
 
             <TextView
                 android:id="@+id/tvDescriptionLabel"

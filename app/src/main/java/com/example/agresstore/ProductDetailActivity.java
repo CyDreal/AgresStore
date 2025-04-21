@@ -4,11 +4,21 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.widget.Toast;
+import android.util.Log;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.bumptech.glide.Glide;
 import com.example.agresstore.databinding.ActivityProductDetailBinding;
+import com.example.agresstore.api.ServerAPI;
+import com.example.agresstore.interfaces.ViewCount;
+import com.example.agresstore.model.ViewCountResponse;
 import com.google.android.material.snackbar.Snackbar;
 
 import java.text.NumberFormat;
@@ -40,6 +50,31 @@ public class ProductDetailActivity extends AppCompatActivity {
 
         setupViews(name, price, status, category, stock, description, image);
         setupClickListeners(name, price, stock, image);
+
+        // Update view count
+        updateViewCount(productId);
+    }
+
+    private void updateViewCount(String productId) {
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(ServerAPI.BASE_URL)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+
+        ViewCount api = retrofit.create(ViewCount.class);
+        api.updateViewCount(productId).enqueue(new Callback<ViewCountResponse>() {
+            @Override
+            public void onResponse(Call<ViewCountResponse> call, Response<ViewCountResponse> response) {
+                if (response.isSuccessful() && response.body() != null && response.body().isSuccess()) {
+                    binding.tvVisitCount.setText(String.valueOf(response.body().getViewCount()));
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ViewCountResponse> call, Throwable t) {
+                Log.e("ViewCount", "Failed to update view count", t);
+            }
+        });
     }
 
     private void setupViews(String name, String price, String status,

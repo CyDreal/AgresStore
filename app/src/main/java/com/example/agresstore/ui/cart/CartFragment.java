@@ -16,8 +16,10 @@ import com.example.agresstore.adapter.CartAdapter;
 import com.example.agresstore.databinding.FragmentCartBinding;
 import com.example.agresstore.model.CartProduct;
 
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 public class CartFragment extends Fragment {
 
@@ -25,26 +27,37 @@ public class CartFragment extends Fragment {
     private CartAdapter cartAdapter;
     private List<CartProduct> cartProducts;
     private SharedPreferences sharedPreferences;
+    private NumberFormat numberFormat;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-//        CartViewModel cartViewModel =
-//                new ViewModelProvider(this).get(CartViewModel.class);
 
         binding = FragmentCartBinding.inflate(inflater, container, false);
-        View root = binding.getRoot();
 
         sharedPreferences = requireContext().getSharedPreferences("checkout", Context.MODE_PRIVATE);
         cartProducts = new ArrayList<>();
+        numberFormat = NumberFormat.getCurrencyInstance(new Locale("id","ID"));
 
         setupRecyclerView();
-        return root;
+        return binding.getRoot();
     }
 
     private void setupRecyclerView() {
-        cartAdapter = new CartAdapter(requireContext(), cartProducts, () -> loadCartProducts());
+        cartAdapter = new CartAdapter(requireContext(), cartProducts, () -> {
+            loadCartProducts();
+            updateTotalPrice(); // Update total harga saat cart bertambah
+        });
         binding.cartRecyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
         binding.cartRecyclerView.setAdapter(cartAdapter);
+    }
+
+    private void updateTotalPrice() {
+        double total = 0;
+        for (CartProduct product : cartProducts) {
+            total += Double.parseDouble(product.getHarga()) * product.getQuantity();
+        }
+        String formattedTotal = numberFormat.format(total).replace("Rp", "Rp ");
+        binding.tvTotalPrice.setText(formattedTotal);
     }
 
     private void loadCartProducts() {
@@ -76,6 +89,7 @@ public class CartFragment extends Fragment {
     public void onResume() {
         super.onResume();
         loadCartProducts();
+        updateTotalPrice();
     }
 
     @Override

@@ -3,7 +3,6 @@ package com.example.agresstore.adapter;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.text.Layout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -74,7 +73,7 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHold
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ProductAdapter.ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         DataProduct result = filteredList.get(position);
         holder.aMerk.setText(result.getNama_produk());
 
@@ -90,6 +89,15 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHold
         }
 
         holder.aStatus.setText(result.getStatus());
+
+        // Set chip background and text color based on status
+        if ("Tersedia".equals(result.getStatus())) {
+            holder.aStatus.setBackgroundResource(R.color.chip_bg_available);
+            holder.aStatus.setTextColor(context.getColor(R.color.chip_text_available));
+        } else {
+            holder.aStatus.setBackgroundResource(R.color.chip_bg_unavailable);
+            holder.aStatus.setTextColor(context.getColor(R.color.chip_text_unavailable));
+        }
 
         Glide.with(context)
                 .load(result.getFoto())
@@ -158,6 +166,9 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHold
             intent.putExtra("image", product.getFoto());
             context.startActivity(intent);
         });
+
+        // Update visit count from database
+        holder.tvVisitCount.setText(String.valueOf(result.getDilihat()));
     }
 
     @Override
@@ -166,7 +177,7 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHold
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
-        TextView aMerk, aHarga, aStatus;
+        TextView aMerk, aHarga, aStatus, tvVisitCount;
         ImageView aGambar;
         MaterialButton btnBuy;
 
@@ -177,7 +188,22 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHold
             this.aStatus = itemView.findViewById(R.id.chipStatus);
             this.aGambar = itemView.findViewById(R.id.ivProduct);
             this.btnBuy = itemView.findViewById(R.id.btnAddToCart);
+            this.tvVisitCount = itemView.findViewById(R.id.tvVisitCount);
         }
+    }
+
+    public void filterByCategory(String category) {
+        filteredList.clear();
+        if (category == null || category.isEmpty()) {
+            filteredList.addAll(originalList);
+        } else {
+            for (DataProduct product : originalList) {
+                if (product.getKategori().equalsIgnoreCase(category)) {
+                    filteredList.add(product);
+                }
+            }
+        }
+        notifyDataSetChanged();
     }
 
     // tambahkan method untuk mendapatkan queary terakhir

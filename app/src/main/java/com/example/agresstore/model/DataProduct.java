@@ -27,6 +27,13 @@ public class DataProduct {
     @SerializedName("foto")
     private String foto;
 
+    @SerializedName("dilihat")
+    private int dilihat;
+
+    public int getDilihat() {
+        return dilihat;
+    }
+
     public String getId() {
         return id;
     }

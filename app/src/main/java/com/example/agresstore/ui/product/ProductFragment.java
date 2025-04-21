@@ -1,14 +1,16 @@
 package com.example.agresstore.ui.product;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.Rect;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.SearchView;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.GridLayoutManager;
@@ -17,9 +19,12 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.agresstore.adapter.ProductAdapter;
 import com.example.agresstore.databinding.FragmentProductBinding;
 import com.example.agresstore.model.DataProduct;
+import com.google.android.material.chip.Chip;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class ProductFragment extends Fragment {
 
@@ -27,26 +32,79 @@ public class ProductFragment extends Fragment {
     private ProductViewModel productViewModel;
     private ProductAdapter adapter;
     private List<DataProduct> productList = new ArrayList<>();
+    private String lastQuery = ""; // untuk menyimpan query terakhir
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-//        productViewModel =
-//                new ViewModelProvider(this).get(ProductViewModel.class);
 
         binding = FragmentProductBinding.inflate(inflater, container, false);
-//        View root = binding.getRoot();
 
-        // hapus duplikasi atau redudansi dari instalasi ViewModel
-//        productViewModel = new ViewModelProvider(this).get(ProductViewModel.class);
-
+        setupUserName();
+        setupViewModel();
+        setupCategories();
         setupRecyclerView();
         setupSearchView();
-        setupViewModel();
-//        observeProducts();
-//        productViewModel.loadProducts(); // memuat data dari API
+
 
         return binding.getRoot();
     }
+
+    private void setupUserName() {
+        SharedPreferences prefs = requireContext()
+                .getSharedPreferences("UserSession", Context.MODE_PRIVATE);
+        String userName = prefs.getString("nama", "User");
+        binding.tvUserName.setText(userName);
+    }
+
+    private void setupCategories() {
+        // chip = button untuk kategorinya
+        // Bersihkan chip group terlebih dahulu
+        binding.chipGroupCategories.removeAllViews();
+
+        // Tambahkan chip "All" kembali
+        Chip allChip = new Chip(requireContext());
+        allChip.setText("All");
+        allChip.setCheckable(true);
+        allChip.setChecked(true);
+        binding.chipGroupCategories.addView(allChip);
+
+        // mengambil kategori unik dari data produk
+        Set<String> uniqueCategories = new HashSet<>();
+        for (DataProduct product : productList) {
+            uniqueCategories.add(product.getKategori());
+        }
+
+        // membuat chip untuk setiap kategori
+        for (String category : uniqueCategories) {
+            Chip chip = new Chip(requireContext());
+            chip.setText(category);
+            chip.setCheckable(true);
+            chip.setClickable(true);
+
+            // handle saat chip ditklik
+            chip.setOnClickListener(v -> {
+                if (chip.isChecked()) {
+                    adapter.filterByCategory(category);
+                } else {
+                    adapter.filterByCategory(null); // Show all
+                }
+            });
+
+            binding.chipGroupCategories.addView(chip);
+        }
+
+        // Handle "All" chip
+        binding.chipAll.setOnClickListener(v -> {
+            if (binding.chipAll.isChecked()) {
+                adapter.filterByCategory(null); // Show all products
+                // Uncheck other chips
+                for (int i = 1; i < binding.chipGroupCategories.getChildCount(); i++) {
+                    ((Chip) binding.chipGroupCategories.getChildAt(i)).setChecked(false);
+                }
+            }
+        });
+    }
+
 
     private void setupRecyclerView() {
         RecyclerView recyclerView = binding.rViewProduct;
@@ -69,16 +127,25 @@ public class ProductFragment extends Fragment {
         binding.searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
+                lastQuery = query; // menyimpan query terakhir
                 adapter.filter(query);
                 return false;
             }
 
             @Override
             public boolean onQueryTextChange(String newText) {
+                lastQuery = newText; // menyimpan query terakhir
+                // melakukan filterisasi secara realtime saat user sedang mengetik
                 adapter.filter(newText);
                 return false;
             }
         });
+
+        // set query yang tersimpan jika ada
+        if (!lastQuery.isEmpty()) {
+            binding.searchView.setQuery(lastQuery, false);
+            binding.searchView.clearFocus();
+        }
 
         // optional: Customize SearchView
         binding.searchView.setIconifiedByDefault(true);
@@ -93,6 +160,14 @@ public class ProductFragment extends Fragment {
                 productList.addAll(products);
                 adapter = new ProductAdapter(requireContext(), products);
                 binding.rViewProduct.setAdapter(adapter);
+
+                // menerapkan filter terakhir jika ada
+                if (!lastQuery.isEmpty()) {
+                    adapter.filter(lastQuery);
+                }
+
+                // memindahkan setup kategories ke sini setelah data dimuat
+                setupCategories();
             }
         });
         productViewModel.loadProducts();
@@ -101,22 +176,27 @@ public class ProductFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
+        // Reload products when returning to fragment
+        productViewModel.loadProducts();
+        // terapkan kembali filter saat fragment di-resume
+        if (adapter != null && !lastQuery.isEmpty()) {
+            adapter.filter(lastQuery);
+        }
     }
 
-//    private void observeProducts() {
-//        // Fix the parameter naming conflict
-//        productViewModel.getProducts().observe(getViewLifecycleOwner(), products -> {
-//            if(products != null) {
-//                productList.clear();
-//                productList.addAll(products); // Use products instead of productList
-//                adapter.notifyDataSetChanged();
-//            }
-//        });
-//    }
+    // simpan state saat fragment dihancurkan
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putString("lastQuery", lastQuery);
+    }
 
-//    @Override
-//    public void onDestroyView() {
-//        super.onDestroyView();
-//        binding = null;
-//    }
+    @Override
+    public void onViewStateRestored(@Nullable Bundle savedInstanceState) {
+        super.onViewStateRestored(savedInstanceState);
+        if (savedInstanceState != null) {
+            lastQuery = savedInstanceState.getString("lastQuery", "");
+        }
+    }
+
 }
