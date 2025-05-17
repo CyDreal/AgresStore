@@ -25,7 +25,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHolder> {
+public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.ViewHolder> {
 
     private Context context;
     private List<DataProduct> originalList; // semua data yang akan ditampilkan
@@ -34,7 +34,7 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHold
     private SharedPreferences sharedPreferences;
     private String lastQuery = ""; // untuk menyimpan query terakhir
 
-    public ProductAdapter(Context context, List<DataProduct> results) {
+    public HomeAdapter(Context context, List<DataProduct> results) {
         this.context = context;
         this.originalList = results;
         this.filteredList = new ArrayList<>(results);
@@ -69,7 +69,7 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHold
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_view,parent,false);
-        return new ProductAdapter.ViewHolder(v);
+        return new HomeAdapter.ViewHolder(v);
     }
 
     @Override

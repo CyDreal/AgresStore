@@ -44,6 +44,7 @@ dependencies {
     implementation(libs.navigation.fragment)
     implementation(libs.navigation.ui)
     implementation(libs.activity)
+    implementation(libs.legacy.support.v4)
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
@@ -58,4 +59,7 @@ dependencies {
 
     // LottieFiles
     implementation("com.airbnb.android:lottie:6.3.0")
+
+    // image slider
+    implementation("com.github.denzcoskun:ImageSlideshow:0.1.2")
 }
